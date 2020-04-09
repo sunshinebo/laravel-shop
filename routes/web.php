@@ -11,13 +11,15 @@
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
+/**
+ * 添加中间键进行验证
+ * ->middleware('verified')
+ */
+Route::get('/', 'PagesController@root')->name('root');
 
-Route::get('/','PagesController@root')->name('root');
+/**
+ * 是 Laravel 的用户认证路由
+ * 加上一个 verify 参数
+ */
+Auth::routes(['verify' => true]);
 
-//是 Laravel 的用户认证路由
-Auth::routes();
-
-//Route::get('/home', 'HomeController@index')->name('home');//已经有主页了
