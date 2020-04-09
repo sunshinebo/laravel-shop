@@ -53,4 +53,51 @@ class UserAddressesController extends Controller
         ]));
         return redirect()->route('user_addresses.index');
     }
+
+    /**
+     * @param UserAddress $user_address
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * 修改编辑
+     */
+    public function edit(UserAddress $user_address)
+    {
+        $this->authorize('own',$user_address);
+        return view('user_addresses.create_and_edit', ['address' => $user_address]);
+    }
+
+    /**
+     * @param UserAddress $user_address
+     * @param UserAddressRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     * 处理修改操作
+     */
+    public function update(UserAddress $user_address, UserAddressRequest $request)
+    {
+        $this->authorize('own', $user_address);
+        $user_address->update($request->only([
+            'province',
+            'city',
+            'district',
+            'address',
+            'zip',
+            'contact_name',
+            'contact_phone',
+        ]));
+
+        return redirect()->route('user_addresses.index');
+    }
+
+    /**
+     * @param UserAddress $user_address
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     * 删除
+     */
+    public function destroy(UserAddress $user_address)
+    {
+        $this->authorize('own', $user_address);
+        $user_address->delete();
+        // 把之前的 redirect 改成返回空数组
+        return [];
+    }
 }
