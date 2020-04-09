@@ -16,3 +16,8 @@
 //});
 
 Route::get('/','PagesController@root')->name('root');
+
+//是 Laravel 的用户认证路由
+Auth::routes();
+
+//Route::get('/home', 'HomeController@index')->name('home');//已经有主页了
