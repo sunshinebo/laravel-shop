@@ -22,7 +22,10 @@ Route::get('/', 'PagesController@root')->name('root');
  * 加上一个 verify 参数
  */
 Auth::routes(['verify' => true]);
-
+//商品列表访客也能访问
+Route::redirect('/', '/products')->name('root');
+Route::get('products', 'ProductsController@index')->name('products.index');
+Route::get('products', 'ProductsController@index')->name('products.index');
 // auth 中间件代表需要登录，verified中间件代表需要经过邮箱验证
 Route::group(['middleware' => ['auth', 'verified']], function () {
     //收获地址列表
@@ -40,9 +43,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::post('products/{product}/favorite', 'ProductsController@favor')->name('products.favor');
     //取消收藏
     Route::delete('products/{product}/favorite', 'ProductsController@disfavor')->name('products.disfavor');
+    //收藏列表
+    Route::get('products/favorites', 'ProductsController@favorites')->name('products.favorites');
 });
-//商品列表访客也能访问
-Route::redirect('/', '/products')->name('root');
-Route::get('products', 'ProductsController@index')->name('products.index');
+
 //商品详情访客也能访问
 Route::get('products/{product}', 'ProductsController@show')->name('products.show');
