@@ -39,3 +39,6 @@ php artisan vendor:publish --tag=laravel-admin-quill
 
 ##软链接
 php artisan storage:link
+
+##引入购物车的图标
+yarn add @fortawesome/fontawesome-free
