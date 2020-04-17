@@ -20,7 +20,7 @@ class ProductsController extends Controller
         // 判断是否有提交 search 参数，如果有就赋值给 $search 变量
         // search 参数用来模糊搜索商品
         if ($search = $request->input('search', '')) {
-            $like = '%'.$search.'%';
+            $like = '%' . $search . '%';
             // 模糊搜索商品标题、商品详情、SKU 标题、SKU描述
             $builder->where(function ($query) use ($like) {
                 $query->where('title', 'like', $like)
@@ -60,18 +60,63 @@ class ProductsController extends Controller
      * @param Product $product
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @throws \Exception
+     * @throws InvalidRequestException
      * 页面详情
+     * 取消收藏按钮
      */
     public function show(Product $product, Request $request)
     {
-        // 判断商品是否已经上架，如果没有上架则抛出异常。
+        //商品未上架
         if (!$product->on_sale) {
-//            throw new \Exception('商品未上架');
+            //            throw new \Exception('商品未上架');
             //异常优化
             throw new InvalidRequestException('商品未上架');
         }
 
-        return view('products.show', ['product' => $product]);
+        $favored = false;
+        // 用户未登录时返回的是 null，已登录时返回的是对应的用户对象
+        if ($user = $request->user()) {
+            // 从当前用户已收藏的商品中搜索 id 为当前商品 id 的商品
+            // boolval() 函数用于把值转为布尔值
+            $favored = boolval($user->favoriteProducts()->find($product->id));
+        }
+
+        return view('products.show', ['product' => $product, 'favored' => $favored]);
+
     }
+
+    /**
+     * @param Product $product
+     * @param Request $request
+     * @return array
+     * 收藏
+     */
+    public function favor(Product $product, Request $request)
+    {
+        $user = $request->user();
+        //判断用户是否收藏，如果收藏返回空
+        if ($user->favoriteProducts()->find($product->id)) {
+            return [];
+        }
+        //未收藏，用attach方法与用户做关联
+        $user->favoriteProducts()->attach($product);
+
+        return [];
+    }
+
+    /**
+     * @param Product $product
+     * @param Request $request
+     * @return array
+     * 取消收藏接口
+     */
+    public function disfavor(Product $product, Request $request)
+    {
+        $user = $request->user();
+        //detach方法用来取消多对多关联
+        $user->favoriteProducts()->detach($product);
+        return [];
+    }
+
+
 }
