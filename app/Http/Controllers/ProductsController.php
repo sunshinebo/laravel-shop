@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\InvalidRequestException;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class ProductsController extends Controller
 {
@@ -15,6 +16,8 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
+//        $redis = Redis::connection();
+//        dd($redis);
         // 创建一个查询构造器
         $builder = Product::query()->where('on_sale', true);
         // 判断是否有提交 search 参数，如果有就赋值给 $search 变量
