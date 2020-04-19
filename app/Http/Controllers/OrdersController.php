@@ -13,6 +13,25 @@ use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        $orders = Order::query()
+            ->with(['items.product', 'items.productSku'])
+            ->where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate();
+        return view('orders.index', ['orders' => $orders]);
+
+
+    }
+
+    /**
+     * @param OrderRequest $request
+     * @return mixed
+     * @throws \Throwable
+     * 提交订单
+     */
     public function store(OrderRequest $request)
     {
         $user = $request->user();
@@ -60,7 +79,7 @@ class OrdersController extends Controller
             // 将下单的商品从购物车中移除
             $skuIds = collect($items)->pluck('sku_id');
             $user->cartItems()->whereIn('product_sku_id', $skuIds)->delete();
-            //触发任务
+            //触发任务消息队列
             $this->dispatch(new CloseOrder($order, config('app.order_ttl')));
             return $order;
         });
