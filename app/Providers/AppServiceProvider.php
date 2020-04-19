@@ -35,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton('wechat_pay', function () {
             $config = config('pay.wechat');
+            $config['notify_url'] = 'http://requestbin.net/r/11xk8eo1';
             if (app()->environment() !== 'production') {
                 //微信支付没有开发模式
                 $config['log']['level'] = Logger::DEBUG;

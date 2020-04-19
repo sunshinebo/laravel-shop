@@ -21,5 +21,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         //这个 URL 是给支付宝服务器调用的，肯定不会有 CSRF Token，所以需要把这个 URL 加到 CSRF 白名单里
         'payment/alipay/notify',
+        //微信服务端回调地址加入白名单
+        'payment/wechat/notify',
     ];
 }
