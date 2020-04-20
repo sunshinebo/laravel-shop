@@ -13,15 +13,6 @@ class PaymentController extends Controller
 {
     /**
      * @param Order $order
-     * 支付成功事件
-     */
-    protected function afterPaid(Order $order)
-    {
-        event(new OrderPaid($order));
-    }
-
-    /**
-     * @param Order $order
      * @param Request $request
      * @return mixed
      * @throws InvalidRequestException
@@ -165,5 +156,14 @@ class PaymentController extends Controller
         //支付成功事件
         $this->afterPaid($order);
         return app('wechat_pay')->success();
+    }
+
+    /**
+     * @param Order $order
+     * 支付成功事件
+     */
+    protected function afterPaid(Order $order)
+    {
+        event(new OrderPaid($order));
     }
 }

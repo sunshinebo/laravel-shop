@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('alipay', function () {
             $config = config('pay.alipay');
             //服务器端回调
-            $config['notify_url'] = 'http://requestbin.net/r/11xk8eo1';
+            $config['notify_url'] = 'http://requestbin.net/r/t01fvht0/payment/alipay/notify';
             //前端回调页面
             $config['return_url'] = route('payment.alipay.return');
             // 判断当前项目运行环境是否为线上环境
@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton('wechat_pay', function () {
             $config = config('pay.wechat');
-            $config['notify_url'] = 'http://requestbin.net/r/194ktjo1';
+            $config['notify_url'] = 'http://requestbin.net/r/t01fvht0';
             if (app()->environment() !== 'production') {
                 //微信支付没有开发模式
                 $config['log']['level'] = Logger::DEBUG;
